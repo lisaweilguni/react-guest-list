@@ -32,30 +32,91 @@ function App() {
   const [guests, setGuests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  function addGuest() {
-    const newState = [`${firstName} ${lastName}`, ...guests];
-    setGuests(newState);
+  // Set base URL for database
+  const baseUrl = 'http://localhost:4000';
+
+  // Get all guests
+  async function fetchGuest() {
+    const response = await fetch(`${baseUrl}/guests`);
+    const allGuests = await response.json();
+    setGuests(allGuests);
   }
 
+  useEffect(() => {
+    fetchGuest().catch(() => {});
+  }, []);
+
+  // Add guest
+  async function addGuest() {
+    const response = await fetch(`${baseUrl}/guests`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        firstName: firstName,
+        lastName: lastName,
+      }),
+    });
+    const createdGuest = await response.json();
+
+    const newGuestList = [...guests];
+    newGuestList.push(createdGuest);
+    setGuests(newGuestList);
+  }
+
+  // Update Guest
+  async function updateGuest() {
+    const response = await fetch(`${baseUrl}/guests/1`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ attending: true }),
+    });
+    const updatedGuest = await response.json();
+  }
+
+  // Remove guest
+  async function removeGuest(id) {
+    const response = await fetch(`${baseUrl}/guests/id`, {
+      method: 'DELETE',
+    });
+    const deletedGuest = await response.json();
+
+    const updatedList = guests.filter((guest) => guest.id !== id);
+    setGuests(updatedList);
+  }
+
+  // Map over guest array to create <div>s for each guest
   const guestNames = guests.map((guest) => {
     return (
-      <div value={guest} key={guest} data-test-id="guest" css={guestListStyles}>
-        {guest}
+      <div
+        value={guest.id}
+        key={guest.id}
+        data-test-id="guest"
+        css={guestListStyles}
+      >
+        {guest.firstName} {guest.lastName}
+        <input
+          checked={checkBoxValue}
+          type="checkbox"
+          aria-label="attending"
+          onChange={(event) => setCheckBoxValue(event.currentTarget.checked)}
+        />
+        <button aria-label="Remove" onClick={() => removeGuest()}>
+          X
+        </button>
       </div>
     );
   });
 
+  // Function to submit form on return - doesn't work
   const handleKeyPress = (event) => {
-    if (event.keyCode === 13) {
+    if (event.keyCode === 'Enter') {
       addGuest();
     }
   };
-
-  function removeGuest() {
-    const newState = [...guests];
-    newState.shift();
-    setGuests(newState);
-  }
 
   return (
     <>
@@ -89,19 +150,7 @@ function App() {
       </div>
 
       {/* Guest Output */}
-      <div css={guestListSectionStyles}>
-        <div>{guestNames}</div>
-
-        <input
-          checked={checkBoxValue}
-          type="checkbox"
-          aria-label="attending"
-          onChange={(event) => setCheckBoxValue(event.currentTarget.checked)}
-        />
-        <button aria-label="Remove" onClick={() => removeGuest()}>
-          Remove
-        </button>
-      </div>
+      <div css={guestListSectionStyles}>{guestNames}</div>
     </>
   );
 }
