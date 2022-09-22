@@ -61,7 +61,7 @@ function App() {
     const createdGuest = await response.json();
 
     const newGuestList = [...guests];
-    newGuestList.push(createdGuest);
+    newGuestList.unshift(createdGuest);
     setGuests(newGuestList);
   }
 
@@ -79,13 +79,14 @@ function App() {
 
   // Remove guest
   async function removeGuest(id) {
-    const response = await fetch(`${baseUrl}/guests/id`, {
+    const response = await fetch(`${baseUrl}/guests/${id}`, {
       method: 'DELETE',
     });
     const deletedGuest = await response.json();
+    console.log(deletedGuest);
 
-    const updatedList = guests.filter((guest) => guest.id !== id);
-    setGuests(updatedList);
+    const newGuestList = guests.filter((g) => g.id !== deletedGuest.id);
+    setGuests(newGuestList);
   }
 
   // Map over guest array to create <div>s for each guest
@@ -104,36 +105,33 @@ function App() {
           aria-label="attending"
           onChange={(event) => setCheckBoxValue(event.currentTarget.checked)}
         />
-        <button aria-label="Remove" onClick={() => removeGuest()}>
+        <button aria-label="Remove" onClick={() => removeGuest(guest.id)}>
           X
         </button>
       </div>
     );
   });
 
-  // Function to submit form on return - doesn't work
-  const handleKeyPress = (event) => {
-    if (event.keyCode === 'Enter') {
-      addGuest();
-    }
+  // Prevent page refresh & clear all input values
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    setFirstName('');
+    setLastName('');
   };
 
   return (
     <>
       {/* Guest Output */}
       <div data-test-id="guest">
-        <form
-          css={inputSectionStyles}
-          onSubmit={(event) => {
-            event.preventDefault();
-          }}
-        >
+        <form css={inputSectionStyles} onSubmit={handleSubmit}>
           <label htmlFor="first-name">First name</label>
           <input
             id="first-name"
             value={firstName}
             onClick={() => setFirstName('')}
             onChange={(event) => setFirstName(event.currentTarget.value)}
+            //disabled={isLoading}
           />
           <br />
           <label htmlFor="last-name">Last name</label>
@@ -142,7 +140,10 @@ function App() {
             value={lastName}
             onClick={() => setLastName('')}
             onChange={(event) => setLastName(event.currentTarget.value)}
-            onKeyPress={handleKeyPress}
+            onKeyPress={async (event) =>
+              event.key === 'Enter' ? await addGuest() : null
+            }
+            //disabled={isLoading}
           />
           <br />
           <button onClick={addGuest}>Add guest</button>
