@@ -20,7 +20,7 @@ root.render(
           color: #202020;
           margin: 0;
           line-height: 20px;
-          font-size: 14px;
+          font-size: 18px;
         }
       `}
     />

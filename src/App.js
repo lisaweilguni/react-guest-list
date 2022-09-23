@@ -18,11 +18,13 @@ const guestListSectionStyles = css`
   justify-content: center;
   margin-top: 30px;
   list-style-type: none;
-  text-align: center;
 `;
 
 const guestListStyles = css`
-  text-align: center;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  font-size: 15px;
 `;
 
 function App() {
@@ -44,7 +46,7 @@ function App() {
 
   useEffect(() => {
     fetchGuest().catch(() => {});
-  }, []);
+  }, [guests]);
 
   // Add guest
   async function addGuest() {
@@ -66,8 +68,8 @@ function App() {
   }
 
   // Update Guest
-  async function updateGuest() {
-    const response = await fetch(`${baseUrl}/guests/1`, {
+  async function updateGuest(id) {
+    const response = await fetch(`${baseUrl}/guests/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -83,7 +85,6 @@ function App() {
       method: 'DELETE',
     });
     const deletedGuest = await response.json();
-    console.log(deletedGuest);
 
     const newGuestList = guests.filter((g) => g.id !== deletedGuest.id);
     setGuests(newGuestList);
@@ -105,6 +106,7 @@ function App() {
           aria-label="attending"
           onChange={(event) => setCheckBoxValue(event.currentTarget.checked)}
         />
+        <div>{checkBoxValue ? 'attending' : 'not attending'}</div>
         <button aria-label="Remove" onClick={() => removeGuest(guest.id)}>
           X
         </button>
