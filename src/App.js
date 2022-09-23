@@ -30,8 +30,8 @@ const guestListStyles = css`
 function App() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [checkBoxValue, setCheckBoxValue] = useState(false);
   const [guests, setGuests] = useState([]);
+  const [isAttending, setIsAttending] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   // Set base URL for database
@@ -46,7 +46,7 @@ function App() {
 
   useEffect(() => {
     fetchGuest().catch(() => {});
-  }, [guests]);
+  }, []);
 
   // Add guest
   async function addGuest() {
@@ -68,15 +68,17 @@ function App() {
   }
 
   // Update Guest
-  async function updateGuest(id) {
+  async function setGuestAttendance(id, event) {
+    console.log('guest id', id);
     const response = await fetch(`${baseUrl}/guests/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ attending: true }),
+      body: JSON.stringify({ attending: event.currentTarget.checked }),
     });
     const updatedGuest = await response.json();
+    console.log(updatedGuest);
   }
 
   // Remove guest
@@ -101,12 +103,11 @@ function App() {
       >
         {guest.firstName} {guest.lastName}
         <input
-          checked={checkBoxValue}
+          checked={guest.isAttending}
           type="checkbox"
-          aria-label="attending"
-          onChange={(event) => setCheckBoxValue(event.currentTarget.checked)}
+          onChange={(event) => setGuestAttendance(guest.id, event)}
         />
-        <div>{checkBoxValue ? 'attending' : 'not attending'}</div>
+        <div>{guest.isAttending ? 'attending' : 'not attending'}</div>
         <button aria-label="Remove" onClick={() => removeGuest(guest.id)}>
           X
         </button>
