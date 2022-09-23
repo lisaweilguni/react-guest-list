@@ -94,7 +94,7 @@ function App() {
     return (
       <div
         value={guest.id}
-        key={guest.id}
+        key={`guest-${guest.id}`}
         data-test-id="guest"
         css={guestListStyles}
       >
