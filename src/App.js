@@ -38,14 +38,14 @@ function App() {
   const baseUrl = 'http://localhost:4000';
 
   // Get all guests
-  async function fetchGuest() {
+  async function fetchGuests() {
     const response = await fetch(`${baseUrl}/guests`);
     const allGuests = await response.json();
     setGuests(allGuests);
   }
 
   useEffect(() => {
-    fetchGuest().catch(() => {});
+    fetchGuests().catch(() => {});
   }, []);
 
   // Add guest
@@ -67,18 +67,33 @@ function App() {
     setGuests(newGuestList);
   }
 
-  // Update Guest
-  async function setGuestAttendance(id, event) {
-    console.log('guest id', id);
-    const response = await fetch(`${baseUrl}/guests/${id}`, {
+  // Getting a single guest
+  async function getGuest(id) {
+    const response = await fetch(`${baseUrl}/guests/${id}`);
+    const guest = await response.json();
+    return guest;
+  }
+
+  // Update attendance
+  async function toggleAttendance(id) {
+    const guestToBeUpdated = await getGuest(id);
+
+    await fetch(`${baseUrl}/guests/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ attending: event.currentTarget.checked }),
+      body: JSON.stringify({
+        attending: !guestToBeUpdated.attending,
+      }),
     });
-    const updatedGuest = await response.json();
-    console.log(updatedGuest);
+
+    /*const newState = guests.map((guest) =>
+      guest.id === id ? { attending: updated.attending, ...guest } : guest,
+    );
+    setGuests(newState);*/
+
+    fetchGuests().catch(() => {});
   }
 
   // Remove guest
@@ -90,6 +105,7 @@ function App() {
 
     const newGuestList = guests.filter((g) => g.id !== deletedGuest.id);
     setGuests(newGuestList);
+    fetchGuests().catch(() => {});
   }
 
   // Map over guest array to create <div>s for each guest
@@ -103,11 +119,11 @@ function App() {
       >
         {guest.firstName} {guest.lastName}
         <input
-          checked={guest.isAttending}
+          checked={guest.attending}
           type="checkbox"
-          onChange={(event) => setGuestAttendance(guest.id, event)}
+          onChange={() => toggleAttendance(guest.id)}
         />
-        <div>{guest.isAttending ? 'attending' : 'not attending'}</div>
+        <div>{guest.attending ? 'attending' : 'not attending'}</div>
         <button aria-label="Remove" onClick={() => removeGuest(guest.id)}>
           X
         </button>
