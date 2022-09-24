@@ -42,6 +42,7 @@ function App() {
     const response = await fetch(`${baseUrl}/guests`);
     const allGuests = await response.json();
     setGuests(allGuests);
+    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -150,7 +151,7 @@ function App() {
             value={firstName}
             onClick={() => setFirstName('')}
             onChange={(event) => setFirstName(event.currentTarget.value)}
-            //disabled={isLoading}
+            disabled={isLoading}
           />
           <br />
           <label htmlFor="last-name">Last name</label>
@@ -162,15 +163,18 @@ function App() {
             onKeyPress={async (event) =>
               event.key === 'Enter' ? await addGuest() : null
             }
-            //disabled={isLoading}
+            disabled={isLoading}
           />
           <br />
           <button onClick={addGuest}>Add guest</button>
         </form>
       </div>
-
       {/* Guest Output */}
-      <div css={guestListSectionStyles}>{guestNames}</div>
+
+      <div css={guestListSectionStyles}>
+        <div> {isLoading && 'Loading...'}</div>
+        {guestNames}
+      </div>
     </>
   );
 }
