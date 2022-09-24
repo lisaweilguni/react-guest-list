@@ -16,11 +16,10 @@ root.render(
         body {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
             Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-          background-color: white;
           color: #202020;
           margin: 0;
           line-height: 20px;
-          font-size: 18px;
+          font-size: 16px;
         }
       `}
     />

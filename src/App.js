@@ -8,30 +8,102 @@ const inputSectionStyles = css`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 200px;
+  padding-top: 100px;
+  font-size: 14px;
+  gap: 10px;
+
+  h1 {
+    padding: 10px 10px 30px 10px;
+    font-size: 35px;
+  }
+
+  input {
+    border: 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: transparent;
+    margin-left: 15px;
+  }
+
+  button {
+    width: 160px;
+    height: 50px;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: #111;
+    cursor: pointer;
+    position: relative;
+    border-radius: 10px;
+    text-transform: uppercase;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 1);
+      color: black;
+      background-color: white;
+      border: 2px solid black;
+    }
+  }
 `;
 
 const guestListSectionStyles = css`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 30px;
-  list-style-type: none;
+  align-items: space-between;
+  font-size: 14px;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 20px 300px auto 300px;
+  gap: 5px;
 `;
 
-const guestListStyles = css`
+const guestStyles = css`
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #dcdcdc;
+  border: 2px solid lightgray;
+  width: 80%;
+  padding: 5px;
+  padding-left: 20px;
+  align-self: center;
+  border-radius: 0.2em;
+
+  button {
+    display: inline-block;
+    padding: 0.3em 1.2em;
+    margin: 0 auto;
+    border: 2px solid #ed4d4d;
+    width: 90px;
+    border-radius: 2em;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-weight: 300;
+    color: #ed4d4d;
+    background-color: white;
+    text-align: center;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 1);
+
+      color: white;
+      background-color: #ed4d4d;
+      border: 2px solid #ed4d4d;
+    }
+  }
+`;
+
+const attendingStyles = css`
   display: flex;
   flex-direction: row;
-  gap: 10px;
-  font-size: 15px;
 `;
 
 function App() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [guests, setGuests] = useState([]);
-  const [isAttending, setIsAttending] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   // Set base URL for database
@@ -51,21 +123,25 @@ function App() {
 
   // Add guest
   async function addGuest() {
-    const response = await fetch(`${baseUrl}/guests`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        firstName: firstName,
-        lastName: lastName,
-      }),
-    });
-    const createdGuest = await response.json();
+    if (firstName && lastName) {
+      const response = await fetch(`${baseUrl}/guests`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
+        }),
+      });
+      const createdGuest = await response.json();
 
-    const newGuestList = [...guests];
-    newGuestList.unshift(createdGuest);
-    setGuests(newGuestList);
+      const newGuestList = [...guests];
+      newGuestList.unshift(createdGuest);
+      setGuests(newGuestList);
+    } else {
+      alert('Please enter a first and last name.');
+    }
   }
 
   // Getting a single guest
@@ -85,6 +161,8 @@ function App() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        firstName: firstName,
+        lastName: lastName,
         attending: !guestToBeUpdated.attending,
       }),
     });
@@ -116,17 +194,19 @@ function App() {
         value={guest.id}
         key={`guest-${guest.id}`}
         data-test-id="guest"
-        css={guestListStyles}
+        css={guestStyles}
       >
         {guest.firstName} {guest.lastName}
-        <input
-          checked={guest.attending}
-          type="checkbox"
-          onChange={() => toggleAttendance(guest.id)}
-        />
-        <div>{guest.attending ? 'attending' : 'not attending'}</div>
+        <div css={attendingStyles}>
+          <input
+            checked={guest.attending}
+            type="checkbox"
+            onChange={() => toggleAttendance(guest.id)}
+          />
+          <div>{guest.attending ? 'attending ✅' : 'not attending 🚫'}</div>
+        </div>
         <button aria-label="Remove" onClick={() => removeGuest(guest.id)}>
-          X
+          Remove
         </button>
       </div>
     );
@@ -142,29 +222,36 @@ function App() {
 
   return (
     <>
-      {/* Guest Output */}
+      {/* Input Section */}
       <div data-test-id="guest">
         <form css={inputSectionStyles} onSubmit={handleSubmit}>
-          <label htmlFor="first-name">First name</label>
-          <input
-            id="first-name"
-            value={firstName}
-            onClick={() => setFirstName('')}
-            onChange={(event) => setFirstName(event.currentTarget.value)}
-            disabled={isLoading}
-          />
-          <br />
-          <label htmlFor="last-name">Last name</label>
-          <input
-            id="last-name"
-            value={lastName}
-            onClick={() => setLastName('')}
-            onChange={(event) => setLastName(event.currentTarget.value)}
-            onKeyPress={async (event) =>
-              event.key === 'Enter' ? await addGuest() : null
-            }
-            disabled={isLoading}
-          />
+          <h1>Start your guest list</h1>
+          <div>
+            <div>
+              <label htmlFor="first-name">First name</label>
+              <input
+                id="first-name"
+                value={firstName}
+                placeholder="First Name"
+                onClick={() => setFirstName('')}
+                onChange={(event) => setFirstName(event.currentTarget.value)}
+                disabled={isLoading}
+              />
+            </div>
+            <br />
+            <label htmlFor="last-name">Last name</label>
+            <input
+              id="last-name"
+              value={lastName}
+              placeholder="Last Name"
+              onClick={() => setLastName('')}
+              onChange={(event) => setLastName(event.currentTarget.value)}
+              onKeyPress={async (event) =>
+                event.key === 'Enter' ? await addGuest() : null
+              }
+              disabled={isLoading}
+            />
+          </div>
           <br />
           <button onClick={addGuest}>Add guest</button>
         </form>
