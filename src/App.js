@@ -139,8 +139,6 @@ function App() {
       const newGuestList = [...guests];
       newGuestList.unshift(createdGuest);
       setGuests(newGuestList);
-    } else {
-      alert('Please enter a first and last name.');
     }
   }
 
@@ -236,6 +234,7 @@ function App() {
                 onClick={() => setFirstName('')}
                 onChange={(event) => setFirstName(event.currentTarget.value)}
                 disabled={isLoading}
+                required
               />
             </div>
             <br />
@@ -250,6 +249,7 @@ function App() {
                 event.key === 'Enter' ? await addGuest() : null
               }
               disabled={isLoading}
+              required
             />
           </div>
           <br />
