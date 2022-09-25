@@ -63,7 +63,7 @@ const guestStyles = css`
   justify-content: space-between;
   align-items: center;
   background-color: #dcdcdc;
-  border: 2px solid lightgray;
+  border: 2px solid #d3d3d3;
   width: 80%;
   padding: 5px;
   padding-left: 20px;
@@ -105,6 +105,7 @@ function App() {
   const [lastName, setLastName] = useState('');
   const [guests, setGuests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState();
 
   // Set base URL for database
   const baseUrl = 'http://localhost:4000';
@@ -165,10 +166,12 @@ function App() {
       }),
     });
 
-    /*const newState = guests.map((guest) =>
-      guest.id === id ? { attending: updated.attending, ...guest } : guest,
+    const newState = guests.map((guest) =>
+      guest.id === id
+        ? { attending: guestToBeUpdated.attending, ...guest }
+        : guest,
     );
-    setGuests(newState);*/
+    setGuests(newState);
 
     fetchGuests().catch(() => {});
   }
@@ -184,6 +187,20 @@ function App() {
     setGuests(newGuestList);
     fetchGuests().catch(() => {});
   }
+
+  /* Filter attending
+function filterAttending(event) {
+    setSelectedCategory(event.target.value);
+  }
+
+  function getFilteredList() {
+    if (!selectedCategory) {
+      return guests;
+    } else {
+      const newGuestList = guests.filter((guest) => guest.attending === true);
+      setGuests(newGuestList);
+    }
+  } */
 
   // Map over guest array to create <div>s for each guest
   const guestNames = guests.map((guest) => {
@@ -254,6 +271,11 @@ function App() {
           </div>
           <br />
           <button onClick={addGuest}>Add guest</button>
+          <select name="attending-filter" id="attending-filter">
+            <option value="">All</option>
+            <option value="attending">Attending</option>
+            <option value="not-attending">Non-attending</option>
+          </select>
         </form>
       </div>
       {/* Guest Output */}
