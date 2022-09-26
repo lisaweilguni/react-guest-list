@@ -105,6 +105,7 @@ function App() {
   const [lastName, setLastName] = useState('');
   const [guests, setGuests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(true);
 
   // Set base URL for database
   const baseUrl = 'http://localhost:4000';
@@ -119,6 +120,7 @@ function App() {
   useEffect(() => {
     fetchGuests().catch(() => {});
     setIsLoading(false);
+    setIsDisabled(false);
   }, []);
 
   // Add guest
@@ -235,7 +237,7 @@ function App() {
                 placeholder="First Name"
                 onClick={() => setFirstName('')}
                 onChange={(event) => setFirstName(event.currentTarget.value)}
-                disabled={isLoading}
+                disabled={isDisabled}
                 required
               />
             </div>
@@ -250,7 +252,7 @@ function App() {
               onKeyPress={async (event) =>
                 event.key === 'Enter' ? await addGuest() : null
               }
-              disabled={isLoading}
+              disabled={isDisabled}
               required
             />
           </div>
