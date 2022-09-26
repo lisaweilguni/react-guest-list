@@ -261,7 +261,7 @@ function App() {
       {/* Guest Output */}
 
       <div css={guestListSectionStyles}>
-        <div> {isLoading && 'Loading...'}</div>
+        <div> {isLoading ? 'Loading...' : ''}</div>
         {guestNames}
       </div>
     </>
