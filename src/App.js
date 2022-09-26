@@ -213,8 +213,8 @@ function App() {
   return (
     <>
       {/* Input Section */}
-      <div data-test-id="guest">
-        <form onSubmit={handleSubmit} css={inputSectionStyles}>
+      <div>
+        <form css={inputSectionStyles}>
           <h1>Start your guest list</h1>
           <div>
             <div>
