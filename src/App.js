@@ -245,9 +245,9 @@ function App() {
             />
           </div>
           <br />
-          {/*<button onClick={addGuest} onSubmit={handleSubmit}>
+          {/* <button onClick={addGuest} onSubmit={handleSubmit}>
             Add guest
-            </button>*/}
+            </button> */}
         </form>
       </div>
       {/* Guest Output */}
