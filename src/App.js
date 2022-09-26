@@ -100,6 +100,10 @@ const attendingStyles = css`
   flex-direction: row;
 `;
 
+const hiddenButtonStyle = css`
+  display: none;
+`;
+
 function App() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -163,13 +167,14 @@ function App() {
     );
     setGuests(newGuestState);
   }
-
+  console.log('guests', guests);
   // Remove guest
   async function removeGuest(id) {
     const response = await fetch(`${baseUrl}/guests/${id}`, {
       method: 'DELETE',
     });
     const deletedGuest = await response.json();
+    console.log('deleted', deletedGuest);
 
     const newGuestList = guests.filter((guest) => guest.id !== deletedGuest.id);
     setGuests(newGuestList);
@@ -214,7 +219,7 @@ function App() {
     <>
       {/* Input Section */}
       <div>
-        <form css={inputSectionStyles}>
+        <form css={inputSectionStyles} onSubmit={handleSubmit}>
           <h1>Start your guest list</h1>
           <div>
             <div>
@@ -231,6 +236,20 @@ function App() {
             </div>
             <br />
             <label htmlFor="last-name">Last name</label>
+            {/* <input
+              id="last-name"
+              value={lastName}
+              placeholder="Last Name"
+              onClick={() => setLastName('')}
+              onChange={(event) => setLastName(event.currentTarget.value)}
+              onKeyPress={async (event) => {
+                event.key === 'Enter' ? await addGuest() : null }
+                setLastName('');
+                setFirstName('');
+              }
+              disabled={isDisabled}
+              required
+            /> */}
             <input
               id="last-name"
               value={lastName}
@@ -247,7 +266,8 @@ function App() {
           <br />
           {/* <button onClick={addGuest} onSubmit={handleSubmit}>
             Add guest
-            </button> */}
+          </button> */}
+          <input type="submit" value="submit" css={hiddenButtonStyle} />
         </form>
       </div>
       {/* Guest Output */}
@@ -258,7 +278,7 @@ function App() {
         ) : guests.length ? (
           guestNames
         ) : (
-          <div>There are currently no guests on the list</div>
+          <div>The guest list is currently empty</div>
         )}
       </div>
     </>
