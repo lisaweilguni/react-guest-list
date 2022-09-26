@@ -237,20 +237,6 @@ function App() {
             </div>
             <br />
             <label htmlFor="last-name">Last name</label>
-            {/* <input
-              id="last-name"
-              value={lastName}
-              placeholder="Last Name"
-              onClick={() => setLastName('')}
-              onChange={(event) => setLastName(event.currentTarget.value)}
-              onKeyPress={async (event) => {
-                event.key === 'Enter' ? await addGuest() : null }
-                setLastName('');
-                setFirstName('');
-              }
-              disabled={isDisabled}
-              required
-            /> */}
             <input
               id="last-name"
               value={lastName}
@@ -265,9 +251,6 @@ function App() {
             />
           </div>
           <br />
-          {/* <button onClick={addGuest} onSubmit={handleSubmit}>
-            Add guest
-          </button> */}
           <input type="submit" value="submit" css={hiddenButtonStyle} />
         </form>
       </div>
