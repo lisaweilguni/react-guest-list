@@ -235,7 +235,7 @@ function App() {
                 placeholder="First Name"
                 onClick={() => setFirstName('')}
                 onChange={(event) => setFirstName(event.currentTarget.value)}
-                disabled={isDisabled}
+                disabled={isLoading}
                 required
               />
             </div>
