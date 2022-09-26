@@ -1,3 +1,17 @@
+# React Guest List
+
+Guest list application connected to an API that temporarily stores the guest data.
+
+Main features
+- Add guests
+- Change status of added guests (attending / not attending)
+- Remove guests
+
+## Screenshots
+
+![image](https://user-images.githubusercontent.com/109659918/192288746-817bbdf5-6a54-43f2-89f3-4724063100b6.png)
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
