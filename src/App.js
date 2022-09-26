@@ -261,8 +261,13 @@ function App() {
       {/* Guest Output */}
 
       <div css={guestListSectionStyles}>
-        <div> {isLoading ? 'Loading...' : ''}</div>
-        {guestNames}
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : guests.length ? (
+          guestNames
+        ) : (
+          <div>There are currently no guests on the list</div>
+        )}
       </div>
     </>
   );
