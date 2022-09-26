@@ -195,6 +195,7 @@ function App() {
           <div css={attendingStyles}>
             <input
               checked={guest.attending}
+              aria-label="attending"
               type="checkbox"
               onChange={(event) =>
                 toggleAttendance(guest.id, event.currentTarget.checked)
