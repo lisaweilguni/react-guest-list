@@ -105,7 +105,6 @@ function App() {
   const [lastName, setLastName] = useState('');
   const [guests, setGuests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState();
 
   // Set base URL for database
   const baseUrl = 'http://localhost:4000';
@@ -188,20 +187,6 @@ function App() {
     fetchGuests().catch(() => {});
   }
 
-  /* Filter attending
-function filterAttending(event) {
-    setSelectedCategory(event.target.value);
-  }
-
-  function getFilteredList() {
-    if (!selectedCategory) {
-      return guests;
-    } else {
-      const newGuestList = guests.filter((guest) => guest.attending === true);
-      setGuests(newGuestList);
-    }
-  } */
-
   // Map over guest array to create <div>s for each guest
   const guestNames = guests.map((guest) => {
     return (
@@ -271,11 +256,6 @@ function filterAttending(event) {
           </div>
           <br />
           <button onClick={addGuest}>Add guest</button>
-          <select name="attending-filter" id="attending-filter">
-            <option value="">All</option>
-            <option value="attending">Attending</option>
-            <option value="not-attending">Non-attending</option>
-          </select>
         </form>
       </div>
       {/* Guest Output */}
