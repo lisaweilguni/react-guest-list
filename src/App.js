@@ -167,14 +167,13 @@ function App() {
     );
     setGuests(newGuestState);
   }
-  console.log('guests', guests);
+
   // Remove guest
   async function removeGuest(id) {
     const response = await fetch(`${baseUrl}/guests/${id}`, {
       method: 'DELETE',
     });
     const deletedGuest = await response.json();
-    console.log('deleted', deletedGuest);
 
     const newGuestList = guests.filter((guest) => guest.id !== deletedGuest.id);
     setGuests(newGuestList);
@@ -218,7 +217,8 @@ function App() {
 
   return (
     <>
-      {/* Input Section */}
+      {/* Guest Name Input Section */}
+
       <div>
         <form css={inputSectionStyles} onSubmit={handleSubmit}>
           <h1>Start your guest list</h1>
@@ -254,7 +254,8 @@ function App() {
           <input type="submit" value="submit" css={hiddenButtonStyle} />
         </form>
       </div>
-      {/* Guest Output */}
+
+      {/* Guest Output Section */}
 
       <div css={guestListSectionStyles}>
         {isLoading ? (
