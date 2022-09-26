@@ -114,11 +114,11 @@ function App() {
     const response = await fetch(`${baseUrl}/guests`);
     const allGuests = await response.json();
     setGuests(allGuests);
-    setIsLoading(false);
   }
 
   useEffect(() => {
     fetchGuests().catch(() => {});
+    setIsLoading(false);
   }, []);
 
   // Add guest
