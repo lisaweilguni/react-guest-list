@@ -176,29 +176,31 @@ function App() {
   }
 
   // Map over guest array to create <div>s for each guest
-  const guestNames = guests.map((guest) => {
-    return (
-      <div
-        value={guest.id}
-        key={`guest-${guest.id}`}
-        data-test-id="guest"
-        css={guestStyles}
-      >
-        {guest.firstName} {guest.lastName}
-        <div css={attendingStyles}>
-          <input
-            checked={guest.attending}
-            type="checkbox"
-            onChange={(event) =>
-              toggleAttendance(guest.id, event.currentTarget.checked)
-            }
-          />
-          <div>{guest.attending ? 'attending ✅' : 'not attending 🚫'}</div>
+  const guestNames =
+    guests.length &&
+    guests.map((guest) => {
+      return (
+        <div
+          value={guest.id}
+          key={`guest-${guest.id}`}
+          data-test-id="guest"
+          css={guestStyles}
+        >
+          {guest.firstName} {guest.lastName}
+          <div css={attendingStyles}>
+            <input
+              checked={guest.attending}
+              type="checkbox"
+              onChange={(event) =>
+                toggleAttendance(guest.id, event.currentTarget.checked)
+              }
+            />
+            <div>{guest.attending ? 'attending ✅' : 'not attending 🚫'}</div>
+          </div>
+          <button onClick={() => removeGuest(guest.id)}>Remove</button>
         </div>
-        <button onClick={() => removeGuest(guest.id)}>Remove</button>
-      </div>
-    );
-  });
+      );
+    });
 
   // Prevent page refresh & clear all input values
   const handleSubmit = (event) => {
@@ -212,41 +214,41 @@ function App() {
     <>
       {/* Input Section */}
       <div data-test-id="guest">
-        <div css={inputSectionStyles}>
-          <form onSubmit={handleSubmit}>
-            <h1>Start your guest list</h1>
+        <form onSubmit={handleSubmit} css={inputSectionStyles}>
+          <h1>Start your guest list</h1>
+          <div>
             <div>
-              <div>
-                <label htmlFor="first-name">First name</label>
-                <input
-                  id="first-name"
-                  value={firstName}
-                  placeholder="First Name"
-                  onClick={() => setFirstName('')}
-                  onChange={(event) => setFirstName(event.currentTarget.value)}
-                  disabled={isDisabled}
-                  required
-                />
-              </div>
-              <br />
-              <label htmlFor="last-name">Last name</label>
+              <label htmlFor="first-name">First name</label>
               <input
-                id="last-name"
-                value={lastName}
-                placeholder="Last Name"
-                onClick={() => setLastName('')}
-                onChange={(event) => setLastName(event.currentTarget.value)}
-                onKeyPress={async (event) =>
-                  event.key === 'Enter' ? await addGuest() : null
-                }
+                id="first-name"
+                value={firstName}
+                placeholder="First Name"
+                onClick={() => setFirstName('')}
+                onChange={(event) => setFirstName(event.currentTarget.value)}
                 disabled={isDisabled}
                 required
               />
             </div>
             <br />
-          </form>
-          <button onClick={addGuest}>Add guest</button>
-        </div>
+            <label htmlFor="last-name">Last name</label>
+            <input
+              id="last-name"
+              value={lastName}
+              placeholder="Last Name"
+              onClick={() => setLastName('')}
+              onChange={(event) => setLastName(event.currentTarget.value)}
+              onKeyPress={async (event) =>
+                event.key === 'Enter' ? await addGuest() : null
+              }
+              disabled={isDisabled}
+              required
+            />
+          </div>
+          <br />
+          {/*<button onClick={addGuest} onSubmit={handleSubmit}>
+            Add guest
+            </button>*/}
+        </form>
       </div>
       {/* Guest Output */}
 
