@@ -171,7 +171,7 @@ function App() {
     });
     const deletedGuest = await response.json();
 
-    const newGuestList = guests.filter((g) => g.id !== deletedGuest.id);
+    const newGuestList = guests.filter((guest) => guest.id !== deletedGuest.id);
     setGuests(newGuestList);
   }
 
@@ -195,9 +195,7 @@ function App() {
           />
           <div>{guest.attending ? 'attending ✅' : 'not attending 🚫'}</div>
         </div>
-        <button aria-label="Remove" onClick={() => removeGuest(guest.id)}>
-          Remove
-        </button>
+        <button onClick={() => removeGuest(guest.id)}>Remove</button>
       </div>
     );
   });
