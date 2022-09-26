@@ -105,7 +105,6 @@ function App() {
   const [lastName, setLastName] = useState('');
   const [guests, setGuests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isDisabled, setIsDisabled] = useState(true);
 
   // Set base URL for database
   const baseUrl = 'http://localhost:4000';
@@ -116,7 +115,6 @@ function App() {
     const allGuests = await response.json();
     setGuests(allGuests);
     setIsLoading(false);
-    setIsDisabled(false);
   }
 
   useEffect(() => {
@@ -252,7 +250,7 @@ function App() {
               onKeyPress={async (event) =>
                 event.key === 'Enter' ? await addGuest() : null
               }
-              disabled={isDisabled}
+              disabled={isLoading}
               required
             />
           </div>
