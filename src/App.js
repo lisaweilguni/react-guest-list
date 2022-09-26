@@ -105,9 +105,11 @@ function App() {
   const [lastName, setLastName] = useState('');
   const [guests, setGuests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(true);
 
   // Set base URL for database
-  const baseUrl = 'http://localhost:4000';
+  const baseUrl =
+    'https://express-guest-list-api-memory-data-store.lisaweilguni.repl.co';
 
   // Get all guests
   async function fetchGuests() {
@@ -115,6 +117,7 @@ function App() {
     const allGuests = await response.json();
     setGuests(allGuests);
     setIsLoading(false);
+    setIsDisabled(false);
   }
 
   useEffect(() => {
@@ -132,6 +135,7 @@ function App() {
         body: JSON.stringify({
           firstName: firstName,
           lastName: lastName,
+          attending: false,
         }),
       });
       const createdGuest = await response.json();
@@ -142,37 +146,22 @@ function App() {
     }
   }
 
-  // Getting a single guest
-  async function getGuest(id) {
-    const response = await fetch(`${baseUrl}/guests/${id}`);
-    const guest = await response.json();
-    return guest;
-  }
-
   // Update attendance
-  async function toggleAttendance(id) {
-    const guestToBeUpdated = await getGuest(id);
-
-    await fetch(`${baseUrl}/guests/${id}`, {
+  async function toggleAttendance(id, checkboxResult) {
+    const response = await fetch(`${baseUrl}/guests/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        firstName: firstName,
-        lastName: lastName,
-        attending: !guestToBeUpdated.attending,
-      }),
+      body: JSON.stringify({ attending: checkboxResult }),
     });
+    const updatedGuest = await response.json();
 
-    const newState = guests.map((guest) =>
-      guest.id === id
-        ? { attending: guestToBeUpdated.attending, ...guest }
-        : guest,
+    let newGuestState = [...guests];
+    newGuestState = newGuestState.map((guest) =>
+      guest.id === id ? updatedGuest : guest,
     );
-    setGuests(newState);
-
-    fetchGuests().catch(() => {});
+    setGuests(newGuestState);
   }
 
   // Remove guest
@@ -184,7 +173,6 @@ function App() {
 
     const newGuestList = guests.filter((g) => g.id !== deletedGuest.id);
     setGuests(newGuestList);
-    fetchGuests().catch(() => {});
   }
 
   // Map over guest array to create <div>s for each guest
@@ -201,7 +189,9 @@ function App() {
           <input
             checked={guest.attending}
             type="checkbox"
-            onChange={() => toggleAttendance(guest.id)}
+            onChange={(event) =>
+              toggleAttendance(guest.id, event.currentTarget.checked)
+            }
           />
           <div>{guest.attending ? 'attending ✅' : 'not attending 🚫'}</div>
         </div>
@@ -224,39 +214,41 @@ function App() {
     <>
       {/* Input Section */}
       <div data-test-id="guest">
-        <form css={inputSectionStyles} onSubmit={handleSubmit}>
-          <h1>Start your guest list</h1>
-          <div>
+        <div css={inputSectionStyles}>
+          <form onSubmit={handleSubmit}>
+            <h1>Start your guest list</h1>
             <div>
-              <label htmlFor="first-name">First name</label>
+              <div>
+                <label htmlFor="first-name">First name</label>
+                <input
+                  id="first-name"
+                  value={firstName}
+                  placeholder="First Name"
+                  onClick={() => setFirstName('')}
+                  onChange={(event) => setFirstName(event.currentTarget.value)}
+                  disabled={isDisabled}
+                  required
+                />
+              </div>
+              <br />
+              <label htmlFor="last-name">Last name</label>
               <input
-                id="first-name"
-                value={firstName}
-                placeholder="First Name"
-                onClick={() => setFirstName('')}
-                onChange={(event) => setFirstName(event.currentTarget.value)}
-                disabled={isLoading}
+                id="last-name"
+                value={lastName}
+                placeholder="Last Name"
+                onClick={() => setLastName('')}
+                onChange={(event) => setLastName(event.currentTarget.value)}
+                onKeyPress={async (event) =>
+                  event.key === 'Enter' ? await addGuest() : null
+                }
+                disabled={isDisabled}
                 required
               />
             </div>
             <br />
-            <label htmlFor="last-name">Last name</label>
-            <input
-              id="last-name"
-              value={lastName}
-              placeholder="Last Name"
-              onClick={() => setLastName('')}
-              onChange={(event) => setLastName(event.currentTarget.value)}
-              onKeyPress={async (event) =>
-                event.key === 'Enter' ? await addGuest() : null
-              }
-              disabled={isLoading}
-              required
-            />
-          </div>
-          <br />
+          </form>
           <button onClick={addGuest}>Add guest</button>
-        </form>
+        </div>
       </div>
       {/* Guest Output */}
 
